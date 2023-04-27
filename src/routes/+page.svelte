@@ -1,15 +1,16 @@
 <script>
-  import Header from '$lib/Header.svelte'
+  import Login from '$lib/Login.svelte'
+  import Attendance from '$lib/Attendance.svelte'
+  import Stats from '$lib/Stats.svelte'
+  import { user } from '$lib/stores'
+
+  let authed = false
 </script>
 
-<Header />
-
-<main>
-  <h2>SvelteKit</h2>
-
-  <p>Welcome to coding with SvelteKit, a modern JavaScript framework that makes it easy to code great apps.</p>
-</main>
-
-<footer>
-  <p>&copy; Craighead Diocesan School 2023</p>
-</footer>
+{#if $user.uid}
+  <!-- <Attendance />
+  <Stats /> -->
+  <p>You are signed up with email: {$user.email}</p>
+{:else}
+  <Login />
+{/if}
