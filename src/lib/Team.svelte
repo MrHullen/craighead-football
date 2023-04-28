@@ -25,20 +25,22 @@
     </thead>
     <tbody>
       {#each playerInfo as player}
-        <tr>
-          <td>
-            {player.name ? player.name : 'Pending'}
-          </td>
-          <td>
-            {player.email}
-          </td>
-          <td>
-            {player.practices}
-          </td>
-          <td>
-            {player.games}
-          </td>
-        </tr>
+        {#if player}
+          <tr>
+            <td>
+              {player.name ? player.name : 'Pending'}
+            </td>
+            <td>
+              {player.email}
+            </td>
+            <td>
+              {player.practices}
+            </td>
+            <td>
+              {player.games}
+            </td>
+          </tr>
+        {/if}
       {/each}
     </tbody>
   </table>
