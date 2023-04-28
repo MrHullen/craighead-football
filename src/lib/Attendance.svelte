@@ -9,7 +9,7 @@
   <table class="table is-striped">
     <thead>
       <tr>
-        <th>Practice Attendance</th>
+        <th>Practices Attended</th>
         <th>Games Played</th>
       </tr>
     </thead>

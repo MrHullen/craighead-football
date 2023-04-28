@@ -19,7 +19,7 @@
       <tr>
         <th>Name</th>
         <th>Email</th>
-        <th>Practices Attendance</th>
+        <th>Practices Attended</th>
         <th>Games Played</th>
       </tr>
     </thead>
