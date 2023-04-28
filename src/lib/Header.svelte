@@ -13,3 +13,10 @@
     <p class="title">{title}</p>
   </div>
 </section>
+
+<style>
+  section.hero {
+    display: flex;
+    flex-direction: row;
+  }
+</style>
