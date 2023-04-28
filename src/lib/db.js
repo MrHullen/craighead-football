@@ -3,10 +3,10 @@
 // import 'firebase/firestore'
 
 import { user } from './stores'
-import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth'
+import { getAuth, signInWithPopup, GoogleAuthProvider, signOut } from 'firebase/auth'
 import { initializeApp } from 'firebase/app'
 import { getFirestore } from 'firebase/firestore'
-import { doc, setDoc } from 'firebase/firestore'
+import { doc, setDoc, updateDoc, getDoc, getDocs, collection } from 'firebase/firestore'
 
 const firebaseConfig = {
   apiKey: 'AIzaSyCieRhpuqyXT-ICRsZqV8OBcTxVvP5lWNI',
@@ -44,15 +44,15 @@ export async function signup() {
   console.log(`Updating local user store...`)
   user.set({
     uid: loginData.user.uid,
+    name: loginData.user.displayName,
     email: loginData.user.email,
+    photo: loginData.user.photoURL,
   })
 
   console.log(`Writing new user to the database...`)
-  // db.collection('users').doc(loginData.user.uid).set({
-  //   email: loginData.user.email,
-  // })
   await setDoc(doc(db, 'players', loginData.user.uid), {
     email: loginData.user.email,
+    name: loginData.user.displayName,
   })
 
   console.log(`Signup complete.`)
@@ -67,25 +67,47 @@ export async function signup() {
  * Signin: https://firebase.google.com/docs/auth/web/google-signin#handle_the_sign-in_flow_with_the_firebase_sdk
  * Reading from database: https://firebase.google.com/docs/firestore/query-data/get-data#get_a_document
  */
-export async function login(nextPage = undefined) {
+export async function login() {
   console.log(`Logging in...`)
 
   console.log(`Getting login information...`)
-  let loginData = await auth.signInWithPopup(provider)
+  let loginData = await signInWithPopup(auth, provider)
 
   console.log(`Getting user info from database...`)
-  let userRef = await db.collection('users').doc(loginData.user.uid).get()
+  // let userRef = await db.collection('users').doc(loginData.user.uid).get()
+  const docRef = doc(db, 'players', loginData.user.uid)
+  const docSnap = await getDoc(docRef)
 
-  if (userRef.exists) {
-    let userData = userRef.data()
+  if (docSnap.exists) {
+    const playerData = docSnap.data()
 
     console.log(`User found, updating local user store...`)
     user.set({
       uid: loginData.user.uid,
-      ...userData,
+      name: loginData.user.displayName,
+      email: loginData.user.email,
+      photo: loginData.user.photoURL,
+      ...playerData,
+    })
+
+    // temp
+    await updateDoc(doc(db, 'players', loginData.user.uid), {
+      name: loginData.user.displayName,
     })
   } else {
-    console.error(`LOGIN ERROR: user not found...`)
+    console.log(`Writing new user to the database...`)
+    await setDoc(doc(db, 'players', loginData.user.uid), {
+      email: loginData.user.email,
+      name: loginData.user.displayName,
+    })
+
+    console.log(`User created, updating local user store...`)
+    user.set({
+      uid: loginData.user.uid,
+      name: loginData.user.displayName,
+      email: loginData.user.email,
+      photo: loginData.user.photoURL,
+    })
   }
 
   console.log(`Login complete.`)
@@ -102,7 +124,7 @@ export function logout() {
   console.log(`Logging out...`)
 
   console.log(`Logging out with provider...`)
-  auth.signOut()
+  signOut(auth)
 
   console.log(`Resetting local user store...`)
   user.set({
@@ -111,4 +133,13 @@ export function logout() {
   })
 
   console.log(`Logout complete.`)
+}
+
+export async function getAll() {
+  const querySnapshot = await getDocs(collection(db, 'players'))
+  let playerInfo = []
+  querySnapshot.forEach((doc) => {
+    playerInfo = [...playerInfo, doc.data()]
+  })
+  return playerInfo
 }

@@ -3,7 +3,7 @@
 </script>
 
 <div class="center">
-  <button class="signup-button" on:click={signup}>Sign Up ⚽️</button>
+  <button class="signup-button" on:click={login}>Login ⚽️</button>
 </div>
 
 <style>

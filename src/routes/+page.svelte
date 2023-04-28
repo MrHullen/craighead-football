@@ -2,15 +2,16 @@
   import Login from '$lib/Login.svelte'
   import Attendance from '$lib/Attendance.svelte'
   import Stats from '$lib/Stats.svelte'
+  import Team from '$lib/Team.svelte'
   import { user } from '$lib/stores'
-
-  let authed = false
+  import Header from '../lib/Header.svelte'
 </script>
 
 {#if $user.uid}
-  <!-- <Attendance />
-  <Stats /> -->
-  <p>You are signed up with email: {$user.email}</p>
+  <Header title={$user.name} src={$user.photo} />
+  <Attendance />
+  <!-- <Stats /> -->
+  <Team />
 {:else}
   <Login />
 {/if}
